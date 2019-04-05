@@ -1,10 +1,7 @@
-/*
-	- Be able to take flag for the filename
-*/
-
 package main
 
 import (
+	"flag"
 	"os"
 	"encoding/csv"
 	"fmt"
@@ -15,7 +12,10 @@ import (
 )
 
 func main() {
-	file, err := os.Open("problems.csv")
+	wordPtr := flag.String("csv", "problems.csv", "Please enter the CSV to parse")
+	flag.Parse()g
+
+	file, err := os.Open(*wordPtr)
 
 	if err != nil {
 		log.Fatal(err)
