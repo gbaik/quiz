@@ -1,7 +1,8 @@
-package main
+/*
+	- Be able to take flag for the filename
+*/
 
-import (
-)
+package main
 
 import (
 	"os"
@@ -22,9 +23,12 @@ func main() {
 
 	r := csv.NewReader(file)
 	r.Comma = ';'
-	problemCounter := 1;
+	problemCounter := -1;
+	correctAnswerCounter := 0;
 
 	for {
+		problemCounter++
+
 		rawRecord, err := r.Read()
 
 		if err == io.EOF {
@@ -43,8 +47,10 @@ func main() {
 		rawText, _ := reader.ReadString('\n')
 		text := strings.Replace(rawText, "\n", "", -1)
 
-		fmt.Println(text)
+		if strings.Compare(record[1], text) == 0 {
+      correctAnswerCounter++
+    }
+  }
 
-		problemCounter++
-	}
+  fmt.Printf("You scored %v out of %v", correctAnswerCounter, problemCounter)
 }
