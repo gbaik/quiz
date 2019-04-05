@@ -1,15 +1,3 @@
-/*
-
-- Parse CSV file (problems.csv) and return on command
-- Take input from user
-- Check to see if answer is correct next to CSV, and update score
-- Return next question in CSV immediately
-- At end of quiz return how many correct questions 
-	- Invalid answers = incorrect
-- Be able to take flag for the filename
-
-*/
-
 package main
 
 import (
@@ -22,6 +10,7 @@ import (
 	"log"
 	"io"
 	"strings"
+	"bufio"
 )
 
 func main() {
@@ -48,7 +37,13 @@ func main() {
 
 		record := strings.Split(rawRecord[0], ",")
 
-		fmt.Printf("Problem #%v: %v \n", problemCounter, record[0]);
+		fmt.Printf("Problem #%v: %v = ", problemCounter, record[0])
+
+		reader := bufio.NewReader(os.Stdin)
+		rawText, _ := reader.ReadString('\n')
+		text := strings.Replace(rawText, "\n", "", -1)
+
+		fmt.Println(text)
 
 		problemCounter++
 	}
