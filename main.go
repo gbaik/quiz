@@ -12,8 +12,8 @@ import (
 )
 
 func main() {
-	wordPtr := flag.String("csv", "problems.csv", "Please enter the CSV to parse")
-	flag.Parse()g
+	wordPtr := flag.String("csv", "problems.csv", "A CSV file in the format of 'question, answer'")
+	flag.Parse()
 
 	file, err := os.Open(*wordPtr)
 
