@@ -1,3 +1,8 @@
+/*
+	- Add default timer for program
+	- Add flag to accept a time
+*/
+
 package main
 
 import (
@@ -25,12 +30,26 @@ func main() {
 	problemCounter := 1;
 	correctAnswerCounter := 0;
 
-	
+	c := make(chan int)
+	c2 := make(chan string)
+
+	go processCSVFile(r, problemCounter, correctAnswerCounter, c, c2g)
+
+	for currentProblem := range c {
+		record := <- c2
+
+		fmt.Printf("Problem #%v: %v = ", currentProblem, record)
+	}
+}
+ 
+func processCSVFile(r *csv.Reader, problemCounter int, correctAnswerCounter int, c chan int, c2 chan string) {
 	for {
 		record, err := r.Read()
 
 		if err == io.EOF {
 			problemCounter--
+
+			fmt.Printf("You scored %v out of %v", correctAnswerCounter, problemCounter)
 			break
 		}
 
@@ -38,7 +57,8 @@ func main() {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("Problem #%v: %v = ", problemCounter, record[0])
+		c <- problemCounter
+		c2 <- record[0]
 
 		reader := bufio.NewReader(os.Stdin)
 		rawText, _ := reader.ReadString('\n')
@@ -49,7 +69,7 @@ func main() {
 		}
 		
 		problemCounter++
-  }
+	}
 
-  fmt.Printf("You scored %v out of %v", correctAnswerCounter, problemCounter)
+	close(c)
 }
