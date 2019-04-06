@@ -1,6 +1,5 @@
 /*
-	- Add default timer for program
-	- Add flag to accept a time
+	- Fix problemCounter for timer
 */
 
 package main
@@ -21,6 +20,8 @@ const seconds = 5
 
 func main() {
 	wordPtr := flag.String("csv", "problems.csv", "A CSV file in the format of 'question, answer'")
+	numberPtr := flag.Int("limit", 30, "The time limit for the quiz in seconds")
+
 	flag.Parse()
 
 	file, err := os.Open(*wordPtr)
@@ -36,7 +37,7 @@ func main() {
 	c := make(chan int)
 	c2 := make(chan string)
 
-	go processCSVFile(r, problemCounter, correctAnswerCounter, c, c2)
+	go processCSVFile(r, problemCounter, correctAnswerCounter, numberPtr, c, c2)
 
 	for currentProblem := range c {
 		record := <- c2
@@ -56,8 +57,8 @@ func NewTimer(seconds int, action func()) *time.Timer {
 	return timer
 }
  
-func processCSVFile(r *csv.Reader, problemCounter int, correctAnswerCounter int, c chan int, c2 chan string) {
-	NewTimer(seconds, func() {
+func processCSVFile(r *csv.Reader, problemCounter int, correctAnswerCounter int,  numberPtr *int, c chan int, c2 chan string) {
+	NewTimer(*numberPtr, func() {
 		fmt.Printf("You scored %v out of %v", correctAnswerCounter, problemCounter)
 
 		close(c)
