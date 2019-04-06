@@ -11,10 +11,13 @@ import (
 	"encoding/csv"
 	"fmt"
 	"log"
+	"time"
 	"io"
 	"strings"
 	"bufio"
 )
+
+const seconds = 5
 
 func main() {
 	wordPtr := flag.String("csv", "problems.csv", "A CSV file in the format of 'question, answer'")
@@ -33,7 +36,7 @@ func main() {
 	c := make(chan int)
 	c2 := make(chan string)
 
-	go processCSVFile(r, problemCounter, correctAnswerCounter, c, c2g)
+	go processCSVFile(r, problemCounter, correctAnswerCounter, c, c2)
 
 	for currentProblem := range c {
 		record := <- c2
@@ -41,8 +44,25 @@ func main() {
 		fmt.Printf("Problem #%v: %v = ", currentProblem, record)
 	}
 }
+
+func NewTimer(seconds int, action func()) *time.Timer {
+	timer := time.NewTimer(time.Second * time.Duration(seconds))
+
+	go func() {
+		<-timer.C
+		action()
+	}()
+
+	return timer
+}
  
 func processCSVFile(r *csv.Reader, problemCounter int, correctAnswerCounter int, c chan int, c2 chan string) {
+	NewTimer(seconds, func() {
+		fmt.Printf("You scored %v out of %v", correctAnswerCounter, problemCounter)
+
+		close(c)
+	})
+
 	for {
 		record, err := r.Read()
 
