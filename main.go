@@ -22,16 +22,15 @@ func main() {
 	}
 
 	r := csv.NewReader(file)
-	problemCounter := -1;
+	problemCounter := 1;
 	correctAnswerCounter := 0;
 
 	
 	for {
-		problemCounter++
-
 		record, err := r.Read()
 
 		if err == io.EOF {
+			problemCounter--
 			break
 		}
 
@@ -47,7 +46,9 @@ func main() {
 
 		if strings.Compare(record[1], text) == 0 {
       correctAnswerCounter++
-    }
+		}
+		
+		problemCounter++
   }
 
   fmt.Printf("You scored %v out of %v", correctAnswerCounter, problemCounter)
