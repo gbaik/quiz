@@ -22,14 +22,14 @@ func main() {
 	}
 
 	r := csv.NewReader(file)
-	r.Comma = ';'
 	problemCounter := -1;
 	correctAnswerCounter := 0;
 
+	
 	for {
 		problemCounter++
 
-		rawRecord, err := r.Read()
+		record, err := r.Read()
 
 		if err == io.EOF {
 			break
@@ -38,8 +38,6 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		record := strings.Split(rawRecord[0], ",")
 
 		fmt.Printf("Problem #%v: %v = ", problemCounter, record[0])
 
